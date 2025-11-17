@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+
+<meta name="apple-mobile-web-app-title" content="mDokument">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+	<link rel="apple-touch-icon" href="/icons/mobywatel-icon-180x180.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="C:\Users\Falwit\Desktop\rObywatel\Icon.png">
+    <link rel="manifest" href="/manifest.json">
+	
+	
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>mObywatel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* --- 0. RESET I GLOBALNE STYLE --- */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+
+        :root {
+            --bg-color: #121212; 
+            --text-color: #FFFFFF;
+            --card-bg-dark: #1C1C1E; 
+            --navbar-bg: #1B1B1D; 
+            --blue-accent: #0A84FF;
+            --border-color: #3A3A3C;
+            --card-shadow: rgba(0,0,0,0.7);
+            
+            /* Kolory mObywatel */
+            --mobywatel-card-text: #000000;
+            --mobywatel-label-color: #666666;
+            --mobywatel-blue-accent: #0A84FF;
+            --mobywatel-dark-card-bg: #1C1C1E;
+            --mobywatel-dark-text-color: #FFFFFF;
+            --mobywatel-status-bg-custom: #2C2C2E; 
+            --mobywatel-status-color-custom: #34C759;
+            --mobywatel-card-bg-url: url('https://informatykzakladowy.pl/wp-content/uploads/2023/08/niebiesko-1.jpg');
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-color); 
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--text-color);
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .app-container {
+            max-width: 400px; 
+            margin: 0 auto; 
+            min-height: 100vh;
+            background-color: var(--bg-color); 
+            position: relative;
+            box-sizing: border-box;
+            padding-bottom: 70px; 
+        }
+        
+        /* --- 1. HEADER BAR (bez zmian) --- */
+        .header-bar { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 15px 15px 5px 15px; 
+            min-height: 44px; 
+        }
+        .mdowod-title-wrapper { 
+            flex-grow: 1; text-align: center; 
+        }
+        .mdowod-title-wrapper > span { 
+            font-weight: 800; font-size: 17px; 
+            display: block; 
+        }
+        .back-button { 
+            display: flex; align-items: center; color: var(--mobywatel-blue-accent) !important; 
+            font-size: 16px; font-weight: 500; text-decoration: none;
+        }
+        .back-button-icon { margin-right: 5px; font-size: 14px; }
+        .question-icon { font-size: 20px; font-weight: 700; color: var(--mobywatel-blue-accent); }
+
+        /* --- 2. KARTA DOWODU --- */
+        .card { 
+            background-image: var(--mobywatel-card-bg-url) !important; 
+            background-size: cover; 
+            background-position: center 30%; 
+            color: var(--mobywatel-card-text) !important; 
+            border-radius: 12px !important;
+            padding: 20px !important; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important;
+            margin-top: 15px !important;
+            position: relative !important;
+            overflow: hidden !important;
+            /* ZMNIEJSZONA DŁUGOŚĆ KARTY */
+            min-height: 280px; 
+        }
+        
+        .top-section { 
+            position: relative; 
+            z-index: 10; 
+            display: flex !important; 
+            gap: 15px !important; 
+            margin-bottom: 10px !important; 
+            align-items: flex-start; 
+        }
+#user-photo {
+    width: 100px !important; 
+    height: 130px !important; 
+    border-radius: 4px !important; 
+    object-fit: cover !important;
+    /* NOWY MOCNIEJSZY NEON */	
+    box-shadow: 
+        0 0 10px 2px rgba(255, 255, 255, 0.9),  /* Mocny blask, większy spread */
+        0 0 20px 4px rgba(255, 255, 255, 0.7),  /* Rozmyty glow */
+        0 2px 5px rgba(0,0,0,0.2);              /* Stary cień, dla kontrastu */
+    z-index: 2; 
+    filter: grayscale(100%); 
+}
+        
+        .personal-info { flex-grow: 1; z-index: 2; position: relative; }
+        .info-group { margin-bottom: 6px; } 
+        .info-value { color: var(--mobywatel-card-text); font-weight: 500; font-size: 16px; line-height: 1.2; }
+        .info-label { color: var(--mobywatel-label-color); font-weight: 500; font-size: 12px; margin-top: 1px; }
+
+        /* --- FLAGA I GODŁO - POPRAWIONE POZYCJONOWANIE --- */
+        .flag-emblem-section { 
+            position: absolute; 
+            top: 170px; /* Delikatna korekta góra/dół */
+            left: 20px; 
+            z-index: 10;
+            width: 100px; /* Ograniczenie, żeby było stabilniej */
+            height: 60px;
+        }
+
+
+        .emblem-icon {
+            width: 30px; 
+            height: 30px; 
+            fill: #BB2222; 
+            position: absolute;
+            left: 0;
+            top: 0;
+            animation: pulse 2s infinite alternate;
+        }
+
+        .flag-icon { 
+            width: 30px !important; 
+            height: 20px !important; 
+            border: 1px solid rgba(0,0,0,0.1) !important; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: absolute;
+            left: 40px; /* Po prawej od Godła */
+            top: 5px;
+            animation: wave 3s infinite ease-in-out;
+        }
+        
+        .republic-text {
+            position: absolute;
+            top: 35px; /* Poniżej Godła i Flagi */
+            left: 0;
+            color: var(--mobywatel-card-text);
+            font-weight: 500;
+            font-size: 11px; 
+            line-height: 1.2;
+            width: 100%;
+        }
+        .republic-text span { display: block; }
+        .republic-text span:first-child { font-weight: 700; font-size: 12px; }
+
+        /* --- STATUS WAŻNOŚCI - NAPRAWIONE UCINANIE --- */
+.valid-status-container {
+
+    position: absolute !important; 
+    bottom: 0 !important; 
+    left: 0 !important; 
+    width: 100% !important; 
+    
+    /* 1. BARDZO CIEMNE TŁO dla całego paska */
+    background-color: #1a1a1c !important; 
+    
+    margin: 0 !important; 
+    border-radius: 0 !important; 
+    box-sizing: border-box !important;
+
+}
+
+/* Styl dla kontenera tekstu i ikony */
+.valid-status {
+    display: flex !important; 
+    align-items: center !important; 
+    
+    /* 1. Przywracamy padding (pasek będzie wyższy) */
+    padding: 14px 15px !important; 
+    
+    /* 2. Tekst jest ZIELONY */
+    color: #4CAF50 !important; 
+    
+    /* 3. Tekst jest MNIEJSZY (14px) */
+    font-size: 12px !important; 
+    
+    /* 4. Upewniamy się, że czcionka jest czytelna, ale nie zbyt gruba */
+    font-weight: 500 !important; 
+}
+
+/* Styl dla samej ikony */
+.valid-status .fas, .valid-status .far {
+    /* Kolor ikony jest taki sam jak kolor tekstu */
+    color: #4CAF50 !important; 
+    
+    /* 1. Zwiększony odstęp od tekstu */
+    margin-right: 12px !important; 
+    
+    /* 2. Lekko większy rozmiar niż tekst */
+    font-size: 1.4em !important; 
+    
+    padding-top: 2px;
+}
+
+        /* --- 3. AKCJE I SERIA I NUMER (bez zmian) --- */
+        .action-buttons-container { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 0; 
+            margin-top: 10px; 
+            padding: 0 10px; 
+        }
+
+        .action-button { 
+            background: none !important; 
+            border: none !important; 
+            outline: none !important; 
+            box-shadow: none !important;
+            padding: 10px 0px !important; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: flex-start;
+            color: var(--mobywatel-dark-text-color);
+        }
+
+        .button-icon-wrapper { 
+            background-color: var(--mobywatel-dark-card-bg) !important; 
+            border: none;
+            border-radius: 50% !important; 
+            color: var(--mobywatel-blue-accent) !important; 
+            font-size: 20px !important; 
+            width: 55px; 
+            height: 55px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3); 
+        }
+        
+        .action-button-label { 
+            font-size: 11px; 
+            color: var(--mobywatel-dark-text-color); 
+            text-align: center; 
+            font-weight: 400; 
+            margin-top: 5px; 
+            line-height: 1.2;
+            padding: 0 3px; 
+        }
+
+        .serial-number-card { 
+            background-color: var(--mobywatel-dark-card-bg) !important; 
+            border-radius: 12px !important; 
+            margin: 20px 15px 0 15px !important;
+            box-shadow: 0 4px 12px var(--card-shadow) !important; 
+            padding: 0 !important;
+            color: var(--mobywatel-dark-text-color);
+        }
+        .serial-number-header { display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 15px !important; }
+        .copy-button {
+            background-color: var(--mobywatel-blue-accent) !important;
+            color: white !important; border: none !important; border-radius: 8px !important; padding: 8px 12px !important;
+            font-weight: 500;
+        }
+        
+        .serial-number-value {
+             font-size: 20px; 
+             font-weight: 700 !important; 
+             color: var(--mobywatel-dark-text-color) !important; 
+        }
+        .serial-number-text {
+            color: #888 !important; 
+            font-size: 12px; 
+        }
+        
+        /* --- 4. NAWIGACJA DÓŁ (bez zmian) --- */
+        .navbar {
+            position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important;
+            height: 70px !important; background-color: var(--navbar-bg, #1B1B1D) !important; 
+            border-top: 1px solid var(--border-color) !important; display: flex !important;
+            justify-content: space-around !important; align-items: center !important; z-index: 1000 !important;
+            max-width: 400px !important; margin: 0 auto !important; 
+        }
+        .nav-item { 
+            color: #555 !important; 
+            display: flex; flex-direction: column; align-items: center; 
+            font-size: 10px; font-weight: 500; 
+            text-decoration: none;
+        }
+        .nav-item.active { color: var(--mobywatel-blue-accent) !important; }
+        .nav-icon { font-size: 24px; margin-bottom: 3px; }
+        
+        /* --- ANIMACJE CSS (bez zmian) --- */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.05); opacity: 0.9; }
+        }
+
+        @keyframes wave {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div id="mdowod-details" class="app-container">
+        <div style="max-width: 400px; margin: 0 auto;">
+            <div class="header-bar">
+                <a href="#" class="back-button" onclick="alert('Powrót - tu była lista dokumentów');"><i class="fas fa-chevron-left back-button-icon"></i> Dokumenty</a> 
+                <div class="mdowod-title-wrapper">
+                    <span>mDowód</span>
+                    <div id="current-time-mdowod" style="font-size: 13px; color: #888; width: 100%; text-align: center;"></div>
+                </div>
+                <span class="question-icon" style="color: var(--mobywatel-blue-accent);">?</span>
+            </div>
+
+            <div style="padding: 0 15px; box-sizing: border-box;">
+                <div class="card">
+                    
+                    <div class="top-section">
+                        <img id="user-photo" src="https://i.ibb.co/6883g6r/Marta-Kowalska-BW.jpg" alt="Zdjęcie dowodu"> 
+                        
+                        <div class="personal-info">
+                            
+                            <div class="info-group">
+                                <div id="imie" class="info-value">RAFAŁ</div>
+                                <div class="info-label">Imię (imiona)</div>
+                            </div>
+
+                            <div class="info-group">
+                                <div id="nazwisko" class="info-value">SKIBA</div>
+                                <div class="info-label">Nazwisko</div>
+                            </div>
+                            
+                            <div class="info-group">
+                                <div id="obywatelstwo" class="info-value">POLSKIE</div>
+                                <div class="info-label">Obywatelstwo</div>
+                            </div>
+
+                            <div class="info-group">
+                                <div id="dataUrodzenia" class="info-value">06.05.2007</div>
+                                <div class="info-label">Data urodzenia</div>
+                            </div>
+                            
+                            <div class="info-group">
+                                <div id="pesel" class="info-value">07250642594</div>
+                                <div class="info-label">Numer PESEL</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flag-emblem-section">
+                        <svg class="emblem-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M50 0C30.654 0 14.808 15.846 14.808 35.192V64.808C14.808 84.154 30.654 100 50 100C69.346 100 85.192 84.154 85.192 64.808V35.192C85.192 15.846 69.346 0 50 0ZM50 7.408C65.577 7.408 78.146 19.977 78.146 35.554V64.446C78.146 80.023 65.577 92.592 50 92.592C34.423 92.592 21.854 80.023 21.854 64.446V35.554C21.854 19.977 34.423 7.408 50 7.408Z" fill="#BB2222"/>
+                            <path d="M50 20C44.757 20 40 24.757 40 30C40 35.243 44.757 40 50 40C55.243 40 60 35.243 60 30C60 24.757 55.243 20 50 20ZM50 26.667C46.687 26.667 44 29.354 44 32.667C44 35.98 46.687 38.667 50 38.667C53.313 38.667 56 35.98 56 32.667C56 29.354 53.313 26.667 50 26.667Z" fill="#BB2222"/>
+                            <path d="M50 50C44.757 50 40 54.757 40 60C40 65.243 44.757 70 50 70C55.243 70 60 65.243 60 60C60 54.757 55.243 50 50 50ZM50 56.667C46.687 56.667 44 59.354 44 62.667C44 65.98 46.687 68.667 50 68.667C53.313 68.667 56 65.98 56 62.667C56 59.354 53.313 56.667 50 56.667Z" fill="#BB2222"/>
+                            <path d="M50 80C44.757 80 40 84.757 40 90C40 95.243 44.757 100 50 100C55.243 100 60 95.243 60 90C60 84.757 55.243 80 50 80ZM50 86.667C46.687 86.667 44 89.354 44 92.667C44 95.98 46.687 98.667 50 98.667C53.313 98.667 56 95.98 56 92.667C56 89.354 53.313 86.667 50 86.667Z" fill="#BB2222"/>
+                        </svg>
+                        
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Flag_of_Poland.svg/80px-Flag_of_Poland.svg.png" alt="Flaga Polski" class="flag-icon">
+                        
+                        <div class="republic-text">
+                            <span>Rzeczpospolita</span>
+                            <span>Polska</span>
+                        </div>
+                    </div>
+                    
+ <div class="valid-status-container">
+    <div class="valid-status">
+        <i class="far fa-check-circle"></i> Dokument ważny
+    </div>
+</div>
+                    
+                </div>
+            </div>
+            
+            <div class="action-buttons-container">
+                <div class="action-button" onclick="alert('Potwierdź swoje dane')">
+                    <div class="button-icon-wrapper"><i class="fas fa-expand-arrows-alt"></i></div>
+                    <div class="action-button-label">Potwierdź swoje dane</div>
+                </div>
+                <div class="action-button" onclick="alert('Dane dowodu osobistego')">
+                    <div class="button-icon-wrapper"><i class="fas fa-id-card"></i></div>
+                    <div class="action-button-label">Dane dowodu osobistego</div>
+                </div>
+                <div class="action-button" onclick="alert('Zastrzeż PESEL')">
+                    <div class="button-icon-wrapper"><i class="fas fa-lock"></i></div>
+                    <div class="action-button-label">Zastrzeż PESEL</div>
+                </div>
+                <div class="action-button" onclick="alert('Pozostałe skróty')">
+                    <div class="button-icon-wrapper"><i class="fas fa-ellipsis-h"></i></div>
+                    <div class="action-button-label">Pozostałe skróty</div>
+                </div>
+            </div>
+
+            <div class="serial-number-card">
+                <div class="serial-number-header">
+                    <div>
+                        <div class="serial-number-text">Seria i numer mDowodu</div>
+                        <div id="seria-numer" class="serial-number-value">MAAA 80112</div> 
+                    </div>
+                    <button class="copy-button" onclick="copyText('MAAA 80112')">
+                        <i class="fas fa-copy"></i> Kopiuj
+                    </button>
+                </div>
+                <div class="info-note" style="font-size: 11px; color: #888; padding: 0 15px 15px 15px; line-height: 1.4;">
+                    Dane mDowodu i dowodu osobistego są inne - to dwa różne dokumenty.
+                </div>
+            </div>
+            
+            <div id="additional-data-card" class="serial-number-card" style="margin-top: 15px;">
+                <div class="data-header" onclick="toggleData('additional-data-content', 'arrow-icon')" style="padding: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                    <span class="data-header-text" style="font-size: 16px; font-weight: 700;">Twoje dodatkowe dane</span>
+                    <i id="arrow-icon" class="fas fa-chevron-right" style="color: var(--mobywatel-blue-accent); transition: transform 0.3s ease;"></i>
+                </div>
+                
+                <div id="additional-data-content" class="data-content collapsed">
+                    <div class="data-row" style="padding: 10px 15px; display: flex; justify-content: space-between; border-top: 1px solid var(--border-color);">
+                        <span class="data-label" style="color: #888;">Termin ważności mDowodu</span>
+                        <span class="data-value" id="termin-waznosci" style="font-weight: 500;">14.07.2028</span>
+                    </div>
+                    <div class="data-row" style="padding: 10px 15px; display: flex; justify-content: space-between; border-top: 1px solid var(--border-color);">
+                        <span class="data-label" style="color: #888;">Data wydania mDowodu</span>
+                        <span class="data-value" id="data-wydania" style="font-weight: 500;">14.07.2023</span>
+                    </div>
+                    <div class="data-row" style="padding: 10px 15px; display: flex; justify-content: space-between; border-top: 1px solid var(--border-color);">
+                        <span class="data-label" style="color: #888;">Imię ojca</span>
+                        <span class="data-value" id="imie-ojca" style="font-weight: 500;">ANDRZEJ</span>
+                    </div>
+                    <div class="data-row" style="padding: 10px 15px 15px 15px; display: flex; justify-content: space-between; border-top: 1px solid var(--border-color);">
+                        <span class="data-label" style="color: #888;">Miejsce urodzenia</span>
+                        <span class="data-value" id="miejsce-urodzenia" style="font-weight: 500;">WARSZAWA</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="height: 40px;"></div> 
+
+        </div>
+
+        <div class="navbar">
+            <a href="#" class="nav-item active" data-nav="Dokumenty" onclick="alert('Dokumenty')">
+                <i class="fas fa-file-alt nav-icon"></i> Dokumenty
+            </a>
+            <a href="#" class="nav-item" data-nav="Usługi" onclick="alert('Usługi')">
+                <i class="fas fa-list-alt nav-icon"></i> Usługi
+            </a>
+            <a href="#" class="nav-item" data-nav="Kod QR" onclick="alert('Kod QR')">
+                <i class="fas fa-qrcode nav-icon"></i> Kod QR
+            </a>
+            <a href="#" class="nav-item" data-nav="Więcej" onclick="alert('Więcej')">
+                <i class="fas fa-th-large nav-icon"></i> Więcej
+            </a>
+        </div>
+    </div>
+
+    
+    <script>
+        // --- DANE (MARTA KOWALSKA) ---
+        const DANE = {
+            imie: "RAFAŁ", nazwisko: "SKIBA", obywatelstwo: "POLSKIE", dataUrodzenia: "06.05.2007", pesel: "07250642594", seriaNumer: "MDDG 33002",
+            zdjecie: 'data:image/jpeg;base64,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', 
+            terminWaznosci: "14.07.2028", dataWydania: "14.07.2023", imieOjca: "ADAM", miejsceUrodzenia: "POZNAŃ"
+        };
+        let timeUpdateInterval;
+		
+function updateTime() {
+    const now = new Date();
+    
+    // Generowanie aktualnego czasu (godzina:minuta:sekunda)
+    const time = now.toLocaleTimeString('pl-PL', { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit', 
+        hour12: false 
+    });
+    
+    // Generowanie aktualnej daty w formacie Dzień.Miesiąc.Rok
+    const date = now.toLocaleDateString('pl-PL', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+    
+    const timeElement = document.getElementById('current-time-mdowod');
+    if (timeElement) {
+        // Zmieniamy, żeby używać zmiennej 'date' zamiast 'fixedDate'
+        timeElement.innerText = `Czas: ${time} ${date}`;
+    }
+}
+        
+        function updateContent() {
+            if (document.getElementById('imie')) document.getElementById('imie').innerText = DANE.imie;
+            if (document.getElementById('nazwisko')) document.getElementById('nazwisko').innerText = DANE.nazwisko;
+            if (document.getElementById('obywatelstwo')) document.getElementById('obywatelstwo').innerText = DANE.obywatelstwo;
+            if (document.getElementById('dataUrodzenia')) document.getElementById('dataUrodzenia').innerText = DANE.dataUrodzenia;
+            if (document.getElementById('pesel')) document.getElementById('pesel').innerText = DANE.pesel;
+            if (document.getElementById('seria-numer')) document.getElementById('seria-numer').innerText = DANE.seriaNumer;
+            if (document.getElementById('user-photo')) document.getElementById('user-photo').src = DANE.zdjecie;
+            
+            if (document.getElementById('termin-waznosci')) document.getElementById('termin-waznosci').innerText = DANE.terminWaznosci;
+            if (document.getElementById('data-wydania')) document.getElementById('data-wydania').innerText = DANE.dataWydania;
+            if (document.getElementById('imie-ojca')) document.getElementById('imie-ojca').innerText = DANE.imieOjca;
+            if (document.getElementById('miejsce-urodzenia')) document.getElementById('miejsce-urodzenia').innerText = DANE.miejsceUrodzenia;
+        }
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const button = document.querySelector('.serial-number-card .copy-button');
+                const originalText = button.innerHTML;
+                const originalBg = button.style.backgroundColor;
+                
+                button.innerHTML = '<i class="fas fa-check"></i> Skopiowano';
+                button.style.backgroundColor = '#4CAF50';
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.style.backgroundColor = originalBg;
+                }, 1000);
+            });
+        }
+        
+        function toggleData(contentId, iconId) {
+            const content = document.getElementById(contentId);
+            const icon = document.getElementById(iconId);
+
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                icon.style.transform = 'rotate(90deg)';
+            } else {
+                content.classList.add('collapsed');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+        
+        // Inicjalizacja
+        document.addEventListener('DOMContentLoaded', () => {
+             updateContent();
+             updateTime();
+             timeUpdateInterval = setInterval(updateTime, 1000); 
+        });
+    </script>
+
+</body>
+</html>
