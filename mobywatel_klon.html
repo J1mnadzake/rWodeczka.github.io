@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+
+<meta name="apple-mobile-web-app-title" content="mDokument">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+	<link rel="apple-touch-icon" href="/icons/mobywatel-icon-180x180.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="C:\Users\Falwit\Desktop\rObywatel\Icon.png">
+    <link rel="manifest" href="/manifest.json">
+	
+	
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>mObywatel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* --- 0. RESET I GLOBALNE STYLE --- */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+
+:root {
+    /* ZMIANY DLA JASNEGO MOTYWU */
+    --bg-color: #F8F8F8; /* Jasne tło aplikacji */
+    --text-color: #121212; /* Ciemny tekst */
+    --card-bg-dark: #FFFFFF; /* Białe tło dla kart (np. Seria/Numer) */
+    --navbar-bg: #FFFFFF; /* Biały pasek nawigacji */
+    --blue-accent: #0A84FF;
+    --border-color: #DDDDDD; /* Bardziej subtelna ramka/linia */
+    --card-shadow: rgba(0,0,0,0.1); /* Lżejszy cień */
+    
+    /* Kolory mObywatel - dopasowujemy ciemne tła na jasne */
+    --mobywatel-card-text: #000000; /* Tekst na karcie powinien być czarny */
+    --mobywatel-label-color: #666666; 
+    --mobywatel-blue-accent: #0A84FF;
+    --mobywatel-dark-card-bg: #FFFFFF; /* Ciemne karty stają się białe */
+    --mobywatel-dark-text-color: #121212; /* Ciemny tekst na białym tle */
+    --mobywatel-status-bg-custom: #F0F0F0; /* Bardzo jasne tło dla paska statusu */
+	--mobywatel-bg-color: #F5F5F5;
+    --mobywatel-status-color-custom: #34C759;
+	/* Szarawa strona */
+    body {
+    background-color: var(--mobywatel-bg-color) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+html {
+    background-color: var(--mobywatel-bg-color) !important;
+}
+    /* ZMIANA TŁA KARTY NA BIAŁE */
+
+--mobywatel-card-bg-url: url('https://files.axshare.com/gsc/78E402/f3/a8/67/f3a8678615b8481bb5add80cb711b99c/images/ux07_-_dowodosobisty/u27.svg?pageId=499d0fa8-952e-4698-bf37-47ca55d057a7');
+}
+
+        body {
+            margin: 0;
+            background-color: var(--bg-color); 
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--text-color);
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .app-container {
+            max-width: 400px; 
+            margin: 0 auto; 
+            min-height: 100vh;
+            background-color: var(--bg-color); 
+            position: relative;
+            box-sizing: border-box;
+            padding-bottom: 70px; 
+        }
+        
+        /* --- 1. HEADER BAR (bez zmian) --- */
+        .header-bar { 
+    display: flex; justify-content: space-between; align-items: center; 
+    padding: 15px 15px 5px 15px; 
+    min-height: 44px; 
+    position: relative !important; /* KLUCZOWE! Aby pozycjonowanie absolutne działało */
+}
+        .mdowod-title-wrapper { 
+   
+    position: absolute !important; /* Absolutne pozycjonowanie */
+    left: 50% !important; /* Przesunięcie na środek ekranu */
+    transform: translateX(-50%) !important; /* Cofnięcie o połowę własnej szerokości */
+    
+    /* Układanie czasu nad tytułem (jeśli czas jest pierwszym elementem w HTML) */
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important; /* Centrowanie tytułu i czasu względem siebie */
+    
+    z-index: 2 !important; /* Aby tytuł był nad "Dokumenty" */
+}
+
+/* Wewnętrzne elementy (jeśli wewnątrz masz: <div czas> <span> mDowód </span>) */
+.mdowod-title-wrapper > span { 
+    font-weight: 700 !important; /* Mocniejsze pogrubienie */
+    font-size: 18px !important; 
+    display: block !important; 
+    color: #121212 !important;
+	display: inline !important; 
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Styl dla czasu (jeśli to Twój div z czasem) */
+#current-time-mdowod { 
+    color: #52575f !important;
+    font-size: 11px !important;
+    font-weight: 400 !important;
+    
+    /* Ujemny margines (puszczamy go w górę), żeby zniknął nad krawędzią */
+    margin-top: -15px !important;
+    
+    /* KLUCZOWA ZMIANA: Pozycjonowanie relatywne + duży margines. 
+       To spycha czas w dół, ale nie niszczy centrowania! */
+    position: relative !important;
+    top: 40px !important; /* Wartość do dopasowania! 50px to duży spadek. */
+    
+    width: 100% !important;
+    text-align: center !important;
+}
+/* --- 2. Znak zapytania --- */
+.question-icon {
+    /* Upewnienie się, że jest dobrze pozycjonowana */
+    position: absolute !important;
+    top: 25px !important; 
+    right: 15px !important; 
+    z-index: 10 !important;
+    
+    /* 1. Kółko: Wymiary */
+    width: 15px !important; 
+    height: 15px !important;
+    border-radius: 50% !important; 
+    
+    /* 2. Kółko: Biała obwódka i przezroczyste tło (Puste w środku) */
+    border: 2px solid #52575f !important;
+    background-color: transparent !important;
+    
+    /* 3. Centrowanie Pytajnika w środku kółka */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    
+    /* 4. Styl samego znaku "?" */
+    font-size: 12px !important; 
+    color: #52575f !important; 
+    font-weight: 700 !important; 
+}
+
+        /* --- 2. KARTA DOWODU --- */
+        .card { 
+            background-image: var(--mobywatel-card-bg-url) !important; 
+            background-size: cover; 
+            background-position: center 30%; 
+            color: var(--mobywatel-card-text) !important; 
+            border-radius: 12px !important;
+            padding: 20px !important; 
+            margin-top: 45px !important;
+            position: relative !important;
+            overflow: hidden !important;
+            /* ZMNIEJSZONA DŁUGOŚĆ KARTY */
+            min-height: 340px; 
+        }
+        
+        .top-section { 
+            position: relative; 
+            z-index: 10; 
+            display: flex !important; 
+            gap: 15px !important; 
+            margin-bottom: 10px !important; 
+            align-items: flex-start; 
+        }
+#user-photo {
+    width: 100px !important; 
+    height: 130px !important; 
+    border-radius: 4px !important; 
+    object-fit: cover !important;
+    /* NOWY MOCNIEJSZY NEON */	
+    z-index: 2; 
+    filter: grayscale(100%); 
+}
+        
+        .personal-info { flex-grow: 1; z-index: 2; position: relative; }
+        .info-group { margin-bottom: 15px; } 
+        .info-value { color: var(--mobywatel-card-text); font-weight: 450; font-size: 15px; line-height: 1.2; }
+        .info-label { color: var(--mobywatel-label-color); font-weight: 400; font-size: 12px; margin-top: 1px; }
+.emblems-group { 
+    /* KLUCZOWA ZMIANA POZYCJONOWANIA: Ustawiamy ten cały blok obok zdjęcia */
+    position: absolute !important; 
+    top: 235px !important; /* Pozycja pionowa (dostosuj, żeby było na wysokości PESEL-u) */
+    left: 20px !important; /* Pozycja pozioma (obok zdjęcia) */
+    
+    display: flex !important;
+    flex-direction: column !important; /* Układamy elementy w pionie (ikony-flaga, potem tekst) */
+    align-items: flex-start !important; /* Wszystko wyrównane do lewej */
+    z-index: 5 !important;
+}
+.hologram-emblem {
+    position: absolute !important; 
+    top: 220px !important; /* Wartość do dopasowania */
+    left: 22px !important; /* Wartość do dopasowania */
+    z-index: 10;
+    transform: scale(0.7) !important;
+	transform-origin: top left !important;
+    /* Opcja 1: Ustawienie sztywnych wymiarów (zwykła zmiana obrazka) */
+    width: px !important;  /* Zmień tę wartość na mniejszą/większą */
+    height: 28px !important; /* Zmień tę wartość */
+    
+    /* Opcja 2: Skalowanie (jeśli chcesz zachować oryginalne wymiary, ale go zmniejszyć/powiększyć) */
+    /* transform: scale(0.8) !important;  <- np. 0.8 to 80% oryginalnego rozmiaru */
+    
+    /* Zostawiamy Twój filtr, który był dla kontrastu */
+    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.3)) !important; 
+}
+/* --- 6. FLAGA POLSKI (.flag-icon) --- */
+.flag-icon {
+    /* Ustawiamy ją absolutnie, żebyśmy mogli kontrolować jej dokładną pozycję */
+    position: absolute !important;
+    
+    /* Pozycja pionowa: POD zdjęciem. Musisz dopasować tę wartość. */
+    top: 170px !important; 
+    
+    /* Pozycja pozioma: Równo z lewym marginesem. */
+    left: 20px !important; 
+    
+    /* ZWIĘKSZONY ROZMIAR FLAGI (patrz na wzór) */
+    width: 55px !important; 
+    height: 35px !important;
+    
+    border-radius: 4px !important; /* Bardziej zaokrąglone rogi */
+    
+    /* Upewnij się, że inne marginesy jej nie przeszkadzają */
+    margin: 0 !important;
+    
+    /* Dodajemy animację */
+    animation: flag-wave 3s infinite ease-in-out alternate !important; 
+    
+    z-index: 10 !important; /* Na wierzchu */
+}
+        /* --- STATUS WAŻNOŚCI - NAPRAWIONE UCINANIE --- */
+.valid-status-container {
+
+    position: absolute !important; 
+    bottom: 0 !important; 
+    left: 0 !important; 
+    width: 100% !important; 
+    
+    background-color: #ffffff !important; 
+    
+    margin: 0 !important; 
+    border-radius: 0 !important; 
+    box-sizing: border-box !important;
+
+}
+
+/* Styl dla kontenera tekstu i ikony */
+.valid-status {
+    display: flex !important; 
+    align-items: center !important; 
+    
+    /* 1. Przywracamy padding (pasek będzie wyższy) */
+    padding: 16px 15px !important; 
+    
+    /* 2. Tekst jest ZIELONY */
+    color: #598527 !important; 
+    
+    /* 3. Tekst jest MNIEJSZY (14px) */
+    font-size: 13px !important; 
+    
+    /* 4. Upewniamy się, że czcionka jest czytelna, ale nie zbyt gruba */
+    font-weight: 500 !important; 
+}
+
+/* Styl dla samej ikony */
+.valid-status .fas, .valid-status .far {
+    /* Kolor ikony jest taki sam jak kolor tekstu */
+    color: #598527 !important; 
+    
+    /* 1. Zwiększony odstęp od tekstu */
+    margin-right: 12px !important; 
+    
+    /* 2. Lekko większy rozmiar niż tekst */
+    font-size: 1.6em !important; 
+    
+    padding-top: 1px;
+}
+
+.action-buttons-container { 
+    display: grid; 
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 0; 
+    margin-top: 10px; 
+    padding: 0 10px; 
+}
+
+/* --- Kolor Opcji Dokumenty Powrót (górna nawigacja) --- */
+a.back-button { 
+    display: flex !important; 
+    align-items: center !important; 
+    /* KLUCZOWA ZMIANA: Ustawiamy kolor na typowy iOS Blue */
+    color: #007AFF !important; 
+    
+    font-size: 16px !important; 
+    font-weight: 500 !important; 
+    text-decoration: none !important;
+}
+
+/* Upewnij się, że strzałka też jest niebieska */
+.back-button-icon { 
+    margin-right: 5px !important; 
+    font-size: 14px !important; 
+    color: #007AFF !important; 
+}
+
+/* ---------------------------------------------------------------------- */
+/* --- 2. STYLE PRZYCISKÓW AKCJI (cały klikalny blok) --- */
+/* ---------------------------------------------------------------------- */
+.action-button { 
+    background: none !important; 
+    border: none !important; 
+    outline: none !important; 
+    box-shadow: none !important; /* Usuwamy cień, by zachować Flat Design */
+    padding: 10px 0px !important; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: flex-start;
+    color: var(--mobywatel-dark-text-color);
+}
+
+/* ---------------------------------------------------------------------- */
+/* --- 3. KÓŁKO Z IKONĄ (.button-icon-wrapper) --- */
+/* ---------------------------------------------------------------------- */
+.button-icon-wrapper { 
+    /* Ustawienia kontenera kółka */
+    background-color: #FFFFFF !important; 
+    border: none;
+    border-radius: 50% !important;
+    object-fit: scale-down; 
+    display: block;
+    /* Wymiary kółka (i jednocześnie wymiary dla <img> w środku) */
+    width: 40px; 
+    height: 40px; 
+    
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    overflow: hidden; /* Ważne: przytnie obrazek do kółka */
+
+    /* Stare rzeczy do wywalenia (jeśli były) */
+    background-image: none !important; 
+    color: transparent !important;
+    font-size: 0 !important;
+    position: relative !important; /* Usuwamy, bo nie używamy ::after */
+}
+
+/* Właściwy styl dla obrazka w środku kółka */
+.button-icon-wrapper img {
+    width: 70%; /* 70% rozmiaru kółka */
+    height: 70%; 
+    /* To powinno naprawić problem z prostokątem i trzema kropkami */
+    object-fit: scale-down; 
+    display: block;
+    cursor: pointer; 
+}
+
+/* ---------------------------------------------------------------------- */
+/* --- 4. ETYKIETA POD PRZYCISKIEM --- */
+/* ---------------------------------------------------------------------- */
+.action-button-label { 
+    font-size: 11px; 
+    color: var(--mobywatel-dark-text-color); 
+    text-align: center; 
+    font-weight: 400; 
+    margin-top: 5px; 
+    /* Ważne, aby tekst był w dwóch liniach */
+    line-height: 1.2; 
+    padding: 0 3px; 
+}
+
+/* ---------------------------------------------------------------------- */
+/* --- 5. KARTA Z SERIĄ I NUMEREM --- */
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* --- 1. KARTA SERIA I NUMER MDOWODU (GÓRNY PANEL Z NUMEREM) --- */
+/* ---------------------------------------------------------------------- */
+.serial-number-card { 
+    background-color: var(--mobywatel-dark-card-bg) !important; 
+    border-radius: 12px !important; 
+    margin: 20px 15px 0 15px !important;
+    padding: 0 !important; 
+    color: var(--mobywatel-dark-text-color);
+    display: flex; 
+    flex-direction: column; 
+    position: relative; 
+}
+
+/* --- Nagłówek (Numer i Przycisk Kopiuj) --- */
+.serial-number-header { 
+    display: flex !important; 
+    justify-content: space-between !important; 
+    align-items: flex-start !important; 
+    /* Padding: 15px góra, 15px boki, 10px dół, by dać mały odstęp przed opisem */
+    padding: 15px 15px 10px 15px !important; 
+    margin-bottom: 0; 
+    position: relative; 
+}
+
+/* --- USUNIĘTO KRESKĘ STĄD! --- */
+.serial-number-header::after {
+    content: none; 
+}
+
+/* --- Numer MDDG 33002 --- */
+.serial-number-value {
+    font-size: 18px;
+    font-weight: 700; 
+    color: var(--mobywatel-dark-text-color);
+    margin-top: 2px;
+}
+
+/* --- Tytuł "Seria i numer mDowodu" --- */
+.serial-number-title {
+    font-size: 13px;
+    color: var(--mobywatel-light-text-color); 
+    font-weight: 400;
+}
+
+/* --- Przycisk Kopiuj --- */
+.copy-button {
+    background-color: #E6F0FF; 
+    color: #007AFF; 
+    border: none;
+    border-radius: 8px; 
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    min-width: 70px; 
+    height: 35px; 
+    white-space: nowrap;
+}
+
+/* --- Opis pod numerem (Dane mDowodu i dowodu osobistego są inne) --- */
+.serial-number-description {
+    font-size: 12px;
+    color: var(--mobywatel-light-text-color); 
+    font-weight: 400;
+    /* WAŻNE: Całkowicie zerujemy górne odstępy, by przylegał do góry */
+    margin-top: 0px; 
+    padding: 0 15px 15px 15px; /* Padding: 0 góra, 15px boki, 15px dół */
+    position: relative;
+}
+
+/* --- Separator pod OPISEM (Oddziela sekcję numeru od danych dodatkowych) --- */
+.serial-number-description::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: #EAEAEA; 
+}
+
+
+/* ---------------------------------------------------------------------- */
+/* --- 2. KARTA DODATKOWE DANE (Termin, Data, Imię Ojca/Matki) --- */
+/* ---------------------------------------------------------------------- */
+.additional-data-card {
+    background-color: var(--mobywatel-dark-card-bg) !important; 
+    border-radius: 12px !important; 
+    margin: 15px 15px 0 15px !important; 
+    padding: 0 !important; 
+    color: var(--mobywatel-dark-text-color);
+    overflow: hidden; 
+}
+
+/* --- NAGŁÓWEK KARTY "Twoje dodatkowe dane" --- */
+.additional-data-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    cursor: pointer; 
+    border-bottom: 1px solid #EAEAEA; 
+}
+
+/* --- Tytuł "Twoje dodatkowe dane" --- */
+.header-title {
+    font-size: 16px;
+    font-weight: 700; 
+    color: var(--mobywatel-dark-text-color);
+}
+
+/* --- Strzałka / Chevron --- */
+.header-arrow {
+    color: #007AFF; 
+    width: 16px;
+    height: 16px;
+    transform: rotate(0deg); 
+    transition: transform 0.3s ease;
+}
+
+/* --- POJEDYNCZY WIERSZ DANYCH --- */
+.serial-row {
+    /* Zmieniony z powrotem na 15px góra/dół, by nie był "spłaszczony" */
+    padding: 15px; 
+    display: flex;
+    flex-direction: column; 
+    position: relative; 
+}
+
+/* Dodajemy linię jako pseudoelement, żeby rozciągała się na całą szerokość karty */
+.serial-row:not(.last-row)::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: #EAEAEA; 
+}
+
+/* --- OSTATNI WIERSZ W SEKCJI (Nie ma border-bottom) --- */
+.serial-row.last-row {
+    /* Pusty */
+}
+
+/* --- TYTUŁ DANYCH (np. Termin ważności mDowodu) --- */
+.serial-title {
+    font-size: 13px;
+    color: var(--mobywatel-light-text-color); 
+    font-weight: 400;
+}
+
+/* --- WARTOŚĆ DANYCH (np. 14.07.2028) --- */
+.serial-value {
+    font-size: 16px;
+    font-weight: 700; 
+    color: var(--mobywatel-dark-text-color);
+    margin-top: 2px; 
+}
+/* ---------------------------------------------------------------------- */
+/* --- 6. WKLEJANIE 4 RÓŻNYCH ZDJĘĆ DO KÓŁEK (Musisz podmienić URL) --- */
+/* ---------------------------------------------------------------------- */
+
+/* IKONA 1: Potwierdź swoje dane */
+.action-container > div:nth-child(1) .button-icon-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%; /* Zachowujemy kółko */
+    
+    /* TU WKLEJASZ SWÓJ LINK */
+    background-image: url('TWOJ_LINK_DO_ZDJĘCIA_1.jpg') !important;
+    background-size: cover !important; 
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+}
+
+/* 2. Dane dowodu osobistego */
+.action-container > div:nth-child(2) .button-icon-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-image: url('https://files.axshare.com/gsc/78E402/f3/a8/67/f3a8678615b8481bb5add80cb711b99c/images/ux07_-_dowodosobisty/u57.svg?pageId=499d0fa8-952e-4698-bf37-47ca55d057a7') !important;
+    background-size: cover !important; 
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+}
+
+/* 3. Zastrzeż PESEL */
+.action-container > div:nth-child(3) .button-icon-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-image: url('TWOJ_LINK_DO_ZDJĘCIA_3.jpg') !important;
+    background-size: cover !important; 
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+}
+
+/* 4. Pozostałe skróty */
+.action-container > div:nth-child(4) .button-icon-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-image: url('TWOJ_LINK_DO_ZDJĘCIA_4.jpg') !important;
+    background-size: cover !important; 
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+}
+.copy-button {
+    /* WIZUALNA IDENTYFIKACJA */
+    background-color: rgba(0, 122, 255, 0.2) !important; /* Jasnoniebieskie tło */
+    color: #007AFF !important; /* Niebieski tekst */
+    
+    border: none !important; 
+    
+    border-radius: 14px !important; 
+    padding: 6px 10px !important; 
+    
+    /* KLUCZOWA ZMIANA: POPRAWNA CZCIONKA */
+    /* Używamy font-family dla iOS/systemowego wyglądu */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+    
+    /* Waga czcionki Semi-Bold (najbliżej oryginału) */
+    font-weight: 600 !important; 
+    font-size: 12px !important; 
+    
+    /* UKŁAD */
+    display: inline-block !important; 
+    margin: 0 !important;
+    
+    /* Upewnienie się, że tekst jest niepodkreślony */
+    text-decoration: none !important;
+}
+
+        
+        .serial-number-value {
+             font-size: 20px; 
+             font-weight: 700 !important; 
+             color: var(--mobywatel-dark-text-color) !important; 
+        }
+        .serial-number-text {
+            color: #888 !important; 
+            font-size: 12px; 
+        }
+        
+        /* --- 4. NAWIGACJA DÓŁ (bez zmian) --- */
+       .navbar {
+    position: fixed !important; 
+    bottom: 0 !important; 
+    left: 0 !important; 
+    right: 0 !important;
+    
+    height: 60px !important; 
+    
+    /* KLUCZOWE ZMIANY DLA PRZEŚWITU I BLUR */
+    /* 1. Ustawienie tła na ciemne i przezroczyste */
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    
+    /* 2. DODANIE FILTRA ROZMYCIA TŁA */
+    backdrop-filter: blur(10px) !important; 
+    -webkit-backdrop-filter: blur(10px) !important; /* Dla Safari/iOS */
+                0 -2px 5px rgba(0, 0, 0, 0.3) !important; /* Mocniejszy cień dla głębi (góra) */
+
+    border-top: none !important;
+    /* Usunięcie obramowania, które może kolidować z efektem blur */
+    border-top: none !important; 
+    
+    display: flex !important;
+    justify-content: space-around !important; 
+    align-items: center !important; 
+    z-index: 1000 !important;
+    max-width: 400px !important; 
+    margin: 0 auto !important; 
+}
+        .nav-item { 
+            color: #555 !important; 
+            display: flex; flex-direction: column; align-items: center; 
+            font-size: 10px; font-weight: 500; 
+            text-decoration: none;
+        }
+        .nav-item.active { color: var(--mobywatel-blue-accent) !important; }
+        .nav-icon { font-size: 24px; margin-bottom: 3px; }
+        
+    </style>
+</head>
+<body>
+
+    <div id="mdowod-details" class="app-container">
+        <div style="max-width: 400px; margin: 0 auto;">
+            <div class="header-bar">
+                <a href="#" class="back-button" onclick="alert('Powrót - tu była lista dokumentów');"><i class="fas fa-chevron-left back-button-icon"></i> Dokumenty</a> 
+                <div class="mdowod-title-wrapper">
+                    <span>mDowód</span>
+                    <div id="current-time-mdowod" style="font-size: 13px; color: #888; width: 100%; text-align: center;"></div>
+                </div>
+                <span class="question-icon" style="color: var(--mobywatel-blue-accent);">?</span>
+            </div>
+<div class="national-emblems-group">
+   
+   
+</div>
+            <div style="padding: 0 15px; box-sizing: border-box;">
+                <div class="card">
+                    
+                    <div class="top-section">
+                        <img id="user-photo" src="https://i.ibb.co/6883g6r/Marta-Kowalska-BW.jpg" alt="Zdjęcie dowodu"> 
+                        
+                        <div class="personal-info">
+                            
+                            <div class="info-group">
+                                <div id="imie" class="info-value">RAFAŁ</div>
+                                <div class="info-label">Imię (imiona)</div>
+                            </div>
+
+                            <div class="info-group">
+                                <div id="nazwisko" class="info-value">SKIBA</div>
+                                <div class="info-label">Nazwisko</div>
+                            </div>
+                            
+                            <div class="info-group">
+                                <div id="obywatelstwo" class="info-value">POLSKIE</div>
+                                <div class="info-label">Obywatelstwo</div>
+                            </div>
+
+                            <div class="info-group">
+                                <div id="dataUrodzenia" class="info-value">06.05.2007</div>
+                                <div class="info-label">Data urodzenia</div>
+                            </div>
+                            
+                            <div class="info-group">
+                                <div id="pesel" class="info-value">07250642594</div>
+                                <div class="info-label">Numer PESEL</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mdowod-card">
+    <div class="hologram-emblem">
+        <img src="Hologram.png" class="hologram-layer layer-base" alt="Godło RP" />
+        </div>
+
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Flag_of_Poland.svg/80px-Flag_of_Poland.svg.png" alt="Flaga Polski" class="flag-icon">
+</div>
+                    
+ <div class="valid-status-container">
+    <div class="valid-status">
+        <i class="far fa-check-circle"></i> Dokument ważny
+    </div>
+</div>
+                    
+                </div>
+            </div>
+            
+
+<div class="action-buttons-container">
+
+    <!-- PRZYCISK 1: Potwierdź swoje dane -->
+    <button class="action-button">
+        <div class="button-icon-wrapper">
+            <!-- WKLEJ SWÓJ ZDJĘCIE 1 TUTAJ -->
+            <img src="https://files.axshare.com/gsc/78E402/f3/a8/67/f3a8678615b8481bb5add80cb711b99c/images/ux07_-_dowodosobisty/u57.svg?pageId=499d0fa8-952e-4698-bf37-47ca55d057a7" alt="Potwierdź dane"> 
+        </div>
+        <span class="action-button-label">Potwierdź swoje dane</span>
+    </button>
+    
+    <!-- PRZYCISK 2: Dane dowodu osobistego -->
+    <button class="action-button">
+        <div class="button-icon-wrapper">
+            <!-- WKLEJ SWÓJ ZDJĘCIE 2 TUTAJ -->
+            <img src="https://files.axshare.com/gsc/78E402/f3/a8/67/f3a8678615b8481bb5add80cb711b99c/images/ux07_-_dowodosobisty/u62.svg?pageId=499d0fa8-952e-4698-bf37-47ca55d057a7" alt="Dane dowodu"> 
+        </div>
+        <span class="action-button-label">Dane dowodu osobistego</span>
+    </button>
+
+    <!-- PRZYCISK 3: Zastrzeż PESEL -->
+    <button class="action-button">
+        <div class="button-icon-wrapper">
+            <!-- WKLEJ SWÓJ ZDJĘCIE 3 TUTAJ -->
+            <img src="https://files.axshare.com/gsc/78E402/f3/a8/67/f3a8678615b8481bb5add80cb711b99c/images/ux07_-_dowodosobisty/u57.svg?pageId=499d0fa8-952e-4698-bf37-47ca55d057a7" alt="Zastrzeż PESEL"> 
+        </div>
+        <span class="action-button-label">Zastrzeż PESEL</span>
+    </button>
+
+    <!-- PRZYCISK 4: Pozostałe skróty -->
+    <button class="action-button">
+        <div class="button-icon-wrapper">
+            <!-- WKLEJ SWÓJ ZDJĘCIE 4 TUTAJ -->
+            <img src="https://files.axshare.com/gsc/78E402/f3/a8/67/f3a8678615b8481bb5add80cb711b99c/images/ux07_-_dowodosobisty/u268.svg?pageId=499d0fa8-952e-4698-bf37-47ca55d057a7" alt="Pozostałe skróty"> 
+        </div>
+        <span class="action-button-label">Pozostałe skróty</span>
+    </button>
+
+</div>
+            <div class="serial-number-card">
+                <div class="serial-number-header">
+                    <div>
+                        <div class="serial-number-text">Seria i numer mDowodu</div>
+                        <div id="seria-numer" class="serial-number-value">MAAA 80112</div> 
+                    </div>
+      <button class="copy-button">Kopiuj</button>
+                </div>
+                <div class="info-note" style="font-size: 11px; color: #888; padding: 0 15px 15px 15px; line-height: 1.4;">
+                    Dane mDowodu i dowodu osobistego są inne - to dwa różne dokumenty.
+                </div>
+				<div class="additional-data-card">
+
+    <!-- WIERSZ 1: Termin ważności mDowodu -->
+    <div class="serial-row">
+        <div class="serial-title">Termin ważności mDowodu</div>
+        <div class="serial-value">17.05.2028</div>
+    </div>
+
+    <!-- WIERSZ 2: Data wydania mDowodu -->
+    <div class="serial-row">
+        <div class="serial-title">Data wydania mDowodu</div>
+        <div class="serial-value">17.05.2023</div>
+    </div>
+    
+    <!-- WIERSZ 3: Imię ojca -->
+    <div class="serial-row">
+        <div class="serial-title">Imię ojca</div>
+        <div class="serial-value">Maciej</div>
+    </div>
+
+    <!-- OSTATNI WIERSZ: Imię matki (bez separatora na dole!) -->
+    <div class="serial-row last-row">
+        <div class="serial-title">Imię matki</div>
+        <div class="serial-value">Anna</div>
+    </div>
+
+</div>
+            </div>
+            
+            <div id="additional-data-card" class="serial-number-card" style="margin-top: 15px;">
+                <div class="data-header" onclick="toggleData('additional-data-content', 'arrow-icon')" style="padding: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                    <span class="data-header-text" style="font-size: 16px; font-weight: 700;">Twoje dodatkowe dane</span>
+                    <i id="arrow-icon" class="fas fa-chevron-right" style="color: var(--mobywatel-blue-accent); transition: transform 0.3s ease;"></i>
+                </div>
+                
+                <div id="additional-data-content" class="data-content collapsed">
+                    <div class="data-row" style="padding: 10px 15px; display: flex; justify-content: space-between; border-top: 1px solid var(--border-color);">
+                        <span class="data-label" style="color: #888;">Termin ważności mDowodu</span>
+                        <span class="data-value" id="termin-waznosci" style="font-weight: 500;">14.07.2028</span>
+                    </div>
+                    <div class="data-row" style="padding: 10px 15px; display: flex; justify-content: space-between; border-top: 1px solid var(--border-color);">
+                        <span class="data-label" style="color: #888;">Data wydania mDowodu</span>
+                        <span class="data-value" id="data-wydania" style="font-weight: 500;">14.07.2023</span>
+                    </div>
+                    <div class="data-row" style="padding: 10px 15px; display: flex; justify-content: space-between; border-top: 1px solid var(--border-color);">
+                        <span class="data-label" style="color: #888;">Imię ojca</span>
+                        <span class="data-value" id="imie-ojca" style="font-weight: 500;">ANDRZEJ</span>
+                    </div>
+                    <div class="data-row" style="padding: 10px 15px 15px 15px; display: flex; justify-content: space-between; border-top: 1px solid var(--border-color);">
+                        <span class="data-label" style="color: #888;">Miejsce urodzenia</span>
+                        <span class="data-value" id="miejsce-urodzenia" style="font-weight: 500;">WARSZAWA</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="height: 40px;"></div> 
+
+        </div>
+
+        <div class="navbar">
+            <a href="#" class="nav-item active" data-nav="Dokumenty" onclick="alert('Dokumenty')">
+                <i class="fas fa-file-alt nav-icon"></i> Dokumenty
+            </a>
+            <a href="#" class="nav-item" data-nav="Usługi" onclick="alert('Usługi')">
+                <i class="fas fa-list-alt nav-icon"></i> Usługi
+            </a>
+            <a href="#" class="nav-item" data-nav="Kod QR" onclick="alert('Kod QR')">
+                <i class="fas fa-qrcode nav-icon"></i> Kod QR
+            </a>
+            <a href="#" class="nav-item" data-nav="Więcej" onclick="alert('Więcej')">
+                <i class="fas fa-th-large nav-icon"></i> Więcej
+            </a>
+        </div>
+    </div>
+
+    
+    <script>
+        // --- DANE (MARTA KOWALSKA) ---
+        const DANE = {
+            imie: "RAFAŁ", nazwisko: "SKIBA", obywatelstwo: "POLSKIE", dataUrodzenia: "06.05.2007", pesel: "07250642594", seriaNumer: "MDDG 33002",
+            zdjecie: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA0JCgwKCA0MCwwPDg0QFCIWFBISFCkdHxgiMSszMjArLy42PE1CNjlJOi4vQ1xESVBSV1dXNEFfZl5UZU1VV1P/2wBDAQ4PDxQSFCcWFidTNy83U1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1P/wgARCAJkAV0DASIAAhEBAxEB/8QAGQABAQEBAQEAAAAAAAAAAAAAAAEDAgQF/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAL/2gAMAwEAAhADEAAAAtAKACgAAKRRFAAAAEURRAAJRAJRATHfGI2pdikoACkoAAAAAAAAAJRFEAlEWCUTHbGI3F2oAKAAAABRCkURRFgAAAAlEABFgw3xiNqXYCgAAAUAAAAAAARRFEAABAATHfCI3F2oAAKAAAAAAAAAAAEUQACUQDDfCI3st2AAoAAAAAAAAAAAAAJRAAJRMN8YjcXYCgAAAAAAAAAAAAAAAlEWADDfCI3F2oAAAAACkoAQ4O7hodgSwAAAAASiLBhvhEbluwAAAAAKZneWHnPRfL0accw67zHq68kPo9fO7Pew9BFgAAAABMN8Ijel2AAAAAs4L8/vIQJbTl1Th1DmqHI39/y/UeoAAAAADDfCI3F2AAoAATwejyCWnPffZldYcTUZc7cmbSGPO4w6vJ6vV8z3G0ogAAAGG+ERuLsAUAAGR5sew1aC9COhy6HM0HE0GTWHnx9eZ5vRkPosdhKIsAAGG+ERuLsCgAAni9XhG+foFopQUiiUEsEsJz0McfV5jv2/N+gdASwAAYb4RG4u1lAAAPP5d8jbSdCyiyiglhQASWEWEw34PP6/JueoCUQADDfCI3LdgAACHh6z2NKHQLZQAAACLCSwnPUPP3yPcABKIBhvhEehLdgAAJR87fHc7vORs83J7OvF0ethodoK5h3MsT1zxU9bydHpnHZjOoe0AAEAw3wiPQLsAAADxbcdGc7GfOtPPPRyZbc9mnXPRMtMzjjQZda0zaQ415ol6PQAABKJhvhEegXYAAAzM0pzx3mXvGG/GGpep2d6caGeW2Rm6hWWR65j2d9cdk3w9J0AAACYb4RHoF2AAA8fs8hdOOzjnUYXWGPfQnVo047Oc9OTOa8HE7HDSnHXQ46mZ6u89AAACYb4RHoF2AAA8/oyOOuOjqyiKc3qEIXuU5504CdHDuEKSWE56G3QAAAPP6PPEegXYAADjuGC8nd5p0lKQkcG98/Rrxxwad59nUsEQc2DvjQ0AAAA8/o88R6BdgAAAY865CynVlKDPD0ZmGvcMufRBrx2VYTmwiUuuWxQAAAPP6PPEegXYAAAAHnoWylvIvNCWBYW80sCc9ck2y9BKAAAADz+jzxHoF2AAAABlxpmWwWMzTLil6zpYht15uje8dCId7Z6AAAAADz+jzxHoF2AAAABMPRgRBbBCBzDRxTrrilIEpt3z0AAAAAPP6PPEegXYAAAADDfA4WFAdU4ugymozmnBCDqdG3UoAAAAA8/o88R6Et2AAAAAw3wOZ1DnrmGtyppOB3cx3zzCydnVsNrKAAAAATDfCI3st2AAAABMtMxz3ycTocc6QzdQiidOh3NCTrk2vPQAAAAIMN8Ij0JbsAAAADjiwqjjnTgk6hJ1DlaSui9KTnrk07y1AAAAEsGG+ERvZbsAAABLkQpQOeoSdDidjl0J1OgCc3ku2PZoAAABAYb4RG9luwAADnzm/Fgs6KBLCWCgQLQS8k5sLZ0ddZeQ+iz0AAIBhvhEbi7oCec9Hk8/B24H0WOpep0AAcqIsFCgksOZYWzIzwBpmPo7fJ9B7WWoAw3wiN3yrd+/DzQ65AQWDr2eHo+j1hsUAEIWBbKASWHMeU18sFSiBbz0TvMezrxD35eWRCxd1BQIAAF2wH0e/l6H0L5NjWBFCwWZ+c9Xm88OuQAAAWCyjnqBLzEdC7AAAAAAAAumQ9HXlHoy4AAAAAAACwASWRHQuwAAAAAAAAAAAAAAAAAAAJLIjoXYAAAAAAAAAAAAAAAAAEsoBJZEdC7AAAAAAAAAAAAAAAAAAlgoHPXMR6xd0AAAACgAAAAAAABAAAAQADMiP/aAAwDAQACAAMAAAAhcgcgEc4wwAAAAww8MQsQszkYgc4gAMMMMMMMIQwsQkQPcgcgAc88w4ww088sIQ8I0bgcgEc8wAAAAAAAww8MA8IjcgE8gAAAAAMAAAAAw8IQ8foE8gAEcs88888cIAAQ8sQ7E8gAU88888888888IAQ0sH8gEc8884gA8gAU888IAQ0/4Ac8888Ao4wwgM4088oAA/gc8888sAsgI40I4888sAADE88gAAYsogYMsYEQQ888ADc84AAEA8UEsUIgYkIQ08AD88AAAwEUYQwgUAYIoAU8sD8oAAAEQoMgUUoM04MAQ88r4AAAM40UMIQ88k8UoAAQ8/IAAQQskQkMAIcQM4YIAA8/AAAwEEAA44gYwQ0IEAIAQ/AAEw8cUwUQg4wUQ8wAgAA/AAAQ0kggAswAwEAQMcgAA/AAQckEwIksswo8480E8QAXAAokQ8UcEYEcMUMQkM8gAXAAsQMkwQA4kkUwYMM08oAXAAYAMAowscskIw0ws84oAXAAAc8IckUMI8cgsA88sgAXAAU8IIw8ks408g4E848gAXAAQU8AU000gUUM00888AAXIAAAgIUo0MYowQUU848AA/oAAA8IsE4Q8kgw0coUoAE/IAAQsIUgUEEIc4A4c8ogU/oAAAIUQcYQ8cMoMQQAAAc/oAAAIgQEMEwIEEc4kIAA8/8AAADEJOFKMBBPIPOEIKPPK3PNLLKJAADGAKANHCHKGDM5DEHPPHGLANLOFHPPPDEIJwNPPOELCMIDAMDPPPPKLKPwFPPPAEPPDDBHNKEOPAFKKwHAAIAAAFNIAICAAAPAOKKwKAAAAAAEIAAAIAAAAALIB/AAPPPIAAAAAAAAPPPAPPH/AP/EACoQAAECBQQBBAMBAQEAAAAAAAEAAgMEERIwEBQgNDEhMkBQEyJBMyNC/9oACAEBAAEHAvq5rru+sm+u76yb67vrJvrO+sm+s76yb6zvrJvrO+sm+s76yc6z/rJzrP8ArJzrP+snOs/6yc6r/rJzqv8ArJzqv+NEdaF+YGiuo74k51X/AAoky1i3ZRmnFbhwRiFyuX5Kpk1Rbv1QjNIX8+BOdV/wIkYQ0+Zc4Jzqqqqjp5Q1DvRfmcFBil1M851X540Sxqe+vrXjTT+qugKCl3gIGozTnVfmixBDCfELyvOn9VFRWqitRCoqeiKZ5QNCoMxT0yznVflJoFFfcajxoGoNViorVRWotVqonDQqql49BTJOdV+WbiUFqPhBqDVaqKioi1URarUWqxFic2mlVLPubTHO9V+WMb3lO9ya1Nag1UVFRUVFRWq1WKxWJ7E5uks+05J3qvyTDrYZVUxtXID1QGVwTmpwoUFLPubjneq/GVGiXuR80htoFTPRRGr+KWdR+Od6r8cwaQzpDbV1R8FwTx6r+qGbmg4Z3qvxzh8AKEKfDiDSVP8AzxTvVfjmj+6YKlDDTE8I+iljQ0wzvVfjjG55UL4hTwoB/cYp3qvxHwv6oPxX+VB/0GKd6r8RR8qD41uCvCuVVXnVXK5Xq7WN5UH3jFO9V+OL7yofhE0RiIuV6EWiEZNiVQPCqL06JRfkKvKvVyY+ukZS3+gxTvVfjjikXR5JKtRYvxr8a/GgCE0oaFOKKLaqxBisViom+FE9qlB++Kd6r8c2KPB4WqxU0CGhR1DVTg1RPYVKD9ScM71X450ejSiiUKr0RLdQmaORRQVwVzeAUX2FS4pCGKd6r8Tn+tIz7mURRNFc4pzCFb6pjP1qEAm6ORVKINqnsoSrFaWIRKoIKN7Uwi0DDO9V+J/+id6jQhFqppQa0Q0cqaFGhVBpagEFFHoFW0KC65mGd6r8X/tEeo1tVisVqog3QaO0IRCtVisVqpo/won8UD/PDO9V+Iij1/eVFTUaHWipyd4RFVDFGYZ3qvxRPKPnQYBqeFOLvCaMU71X4oiOAoIHU6DAzFO9V+J3qEfUIeOZTnUTYivRer66DmPVM84p3qvxv9ChzeoguTWOadHguChsLSmocwUzxineq/HEbXA4VVitVqtRbVMbTB5Q8Yp3qv8AnHRjRag0DHO9V+V3nhVV1qEcIQyTvVflieeRdROiVVVeUXEoOomxKqvGGP2yzvVfli8XlepVi/GV+Ny/GV+NFpCaShwhZZ3qvyuFRyprcq6ADQ8IXjLO9V+Z3nmVThXjD9uWd6r8zvJ5UVqtVqpyCZ7cs71X5neUeA5EcBoz2jLO9V+Z3nWutVVVVVVV0J0ARTfaMs71X5jxqrlcqqquVyro0IIpvtGWd6r8p8aHhTSqqqqugCATRoU32jLO9V+V/tQ0PGioqKmo4M9uWd6r8sVDU8acWjhD8ZZ3qvyv9TwPOmgHGGfXLO9V+QmgwUVFRU1HAoIeoyTvVfkea6DBRU5nRhpkneq/G86j4I0a5Ag4p3qvwvcGCrIzosT47jaKwoxY+rIzHCuCd6r+biGisScT4jnqE+16Gg+JMxKm3SHFcxQI4iDnO9V/EkBRJtoUSI5/CXfVug+HHi2inGFNlqZMMfxneq/V8wxifOFPiOfya601hRLgh8KLGtRNTxGrIr2Js4VvWoTcNTUdj5dzQ4qtcTHFpUGMHfAe4NUSPXHXV3tyhQ5ktTIzX5HPDU+ZTnFxzu8fAZHe1Mm02MxyryfHY1PmiUXEn4LvHww4hCYiBCbct4jNuTor3fEd4+sd4+sPj6w+PrD4+sd4+sd4+sd4W0W0W0W0WzWzWzWzWzWzWzWzWzWzWzWzWzWzWzWzWzWzWzWzWzWzWzWzWzWzWzWzWzWzWzWzWzW0W0W0W0W0W0UaXshF3//aAAwDAQACAAMAAAAQEkkkYgYwwMMEIwwIgYYYIzgokkYkMwww04wwkYgYcUY7kkkgcgEcw4ww08IYkQMkETkkgYk8wIEMMoMAwwMwIMknkk4EgEM888w888sIws0YMnoYckc4gQAAAAAg0sMQMQY7Yck8oAEMcMc88MIA0MQ0QbEg4gIYk4gA4sAUsoA0sQkH4UgA888AgooEggwkAAUII/kgAc88sQM4sE48I88IQ8sDYAcgAAEgEQ8k44EwQ8II8LgU4AcE4sEI4wE0U8IQ0A8/E8AQ4Q0w0I40cw0EEAUoQ/8AKBFPFEDOAOKBFLFHAEPIF+ABHNEPBKNLFKPHOBLAEKAyAPLPKCANPOPMLKFBNHCPKwFPDOKBKKOPFMLNNGPNKEKwPODAFIJAIKNENKDBPHBAKwHPLHCCOJJLFBPDNCKHHAKxPLIHPBKFPIMHEHEEGALKB1PFGLGADBLCBJFGGJMAHKF1PELMGHJDIOOLICKNCAFKFxPJPMLIELEHOGOEKEABFKFwPPIANGEOOCFJKHNAAEHKFxPKANNCEEKDCHLIEABAHKFwPLKAPKMFLKNANJIAAAPKFyFPPHNJJLEPECKJKABAPKP6FNPANEKOEMMCGMCFKFPBLyEPLENDMNOEMLOFJIAFGFL6AHPNJFJBFGNHHDFLPPIHK6AFPOFDEBKDNHAKGEMMAPK/AHGNBICKINNMGFPBNCOPF4ADJLDDGBJFAAPLPCGIHAG6DIGMEOBPFOGFGAGNKIOKL1GOMBLENDLIPDNEAEAFJAKwKAAAPLAAMMOICFLBAKNAF1INPHPPPKCHPHNPPPAKLAP3EEPPPPPLHPPPHPPPPILHE3AHAHPIAAAPAHAAPIAPPII//8QAGxEAAAcBAAAAAAAAAAAAAAAAAQMENEBysQD/2gAIAQIBAT8AirG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUc7//EABsRAAAHAQAAAAAAAAAAAAAAAAEDBDRAcrEA/9oACAEDAQE/AIqxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHIyxuZUcjLG5lRyMsbmVHO//xAAoEAACAgECBgEEAwAAAAAAAAAAARKhEQJAECEwMUFQIFFggJBwcZH/2gAIAQEACD8C/VVk8P03cS4ZHx1GPR9unn0D6r3vkfXfb1r9a/H2J59Z4/hr6/hE2Z6TZkT3KH8W+L+b4eTI9/jpMx+AK7cF9wsX2dn1+P0iJ7NszjStx4ZLYNmhf6N7hduKZ21dRs08xvc+flr5mcdDOf6NKwanndLv0VqNWkizmJ8+ojzsGLeauYn1GzSPf5NSJfPJp5D9ImyQ0iAlgb/EmdE6J0TonROidE6J0TonROidE6J0TonROidE6J0TonROidE6J0TonROidE6J0TonROidE6J0TonROidEqP/EACgQAAIBAwIGAwEBAQEAAAAAAAABERAhsTAxIEFRcfDxQFBhgZGh4f/aAAgBAQABPyH6vHz9Zh5X1mHlfWYOV9Zi5X1mLlfWYuV9Zj5X1mFlfWYWV9ZhZX1mFlfWYGV9ZiZX1mJlfGvs3E439DVF7HxMTK+C7FoVw2vYEkJJDT3F9ZsUGNmW5bLkHtIzGb9CWpP4GJlfAXXu+g1RYTBCfImxODZYcmbMl890bgj2kn1FcktfEyteTfPkMeSWzYMe1G7CExdDDg5H1LA+6GLhBEvfWxMrWlLf4QxNhpsRL7ESEE9G0dgylcBEtf7OgnKnVxMrVU5vZE4N5m8nIVHdSqLFyi06JEHIbJIDb5auJlathc9xjbEq+qLuEbg+KiyiLCgPlL6jAytWXci5EuXBgq9F8Hug6CDYgTC+ephZWpZjhrUSLL5UkiCCCCBIggggaoXKdBKSRTd1p4WVptClk102QlLFeIWmxlxbI2Eenztp4GVqE6F6CxqvgkRAJgfqi0sLK07Ke7EkhC4FwStF0oJIvlpYWVpzWdCIFiiouFy4XwMkElp4YWVpyL9FvRVWk6sYheP7WlhZWluDu/cSiELVYxjLR/0aWFlaWxlr9xKv2F1BI+ZCiSSSSSSKIdSA0EjHRBd39LCytNIX+iQpGHPnRbnUH7ieYlpJI4lp3H81yfmJ3MbdWLmmBKXdEsJOkYWVpyv6xWRAFsJ+bFj/AEPpG3U55ak1GIC6inItEOVM07DvcLLkjPotLCytP9GHsJJORs3FIYcGKrFdiU1cEm9U740sLK0/6A5UQkn4hQVwT/8AQ3Ozkm9FyIEN4w38Ixldv+xd3uN3vZk0vAdx30sLK0oXYrEyi6djlT0BJhWFibGiXPYhuQLLj/RBStqEGiS7vkifeRZfw2CEmhtVLqcghIW2lhZWk7Ul1LQaJ6h7CnkJzyF2ELWcqGIjdH4QybJEtyrhqRJRSCTuDW+QD0cLK0mpP+hSC4YdFUkG6qCUhogQ6VIEs7k22FhNHCytKdG7KKjGXCoYohZq5DK4lSERo4WVpKUsOfASIozdiUaFgQiBiKOl45QttHCytJJSZYxORMniWCCRsdMTvwmMZNmJdaWFlaSSoTc3Jq4TELjoRtikE5h8BjY3S8X9ulhZWneQSe4hCqxoIEF5uyl9ILgbHlxwGNjORAhd/XSwsrTZct0S5iHRCFWAyU7kmMqA6hJUYx0mBXQhIhpYWVqNWHuIVFRkCQyDYQqMdTViZNgJaeFlaqQ4hC4DY/QQVlcs+dJJGxjEliQo1MLK1VjvoqNkwJUf2HeKLc3QNfcRuIkkjYybs1cLK1VsnWRsZFj82SOgz9CfmT6mxXOZYckdF31cLK1ZBG1JpaBqQSdwlfMdEoEpNN16uFla28TREkjdRIQmISN0QurwsrXz4IrTqwMmqm3q4WVrb9CdEIJCHSBA1RsSSIWssLK1t0Y1AgmJ1WVRYboK9LZrTCyta5saGhomK0K7DDO9BLa6YWVq2MIQaGhoYckuDKfhgJhZWq8NUg6NED4ASEhBKwxm3q4WVqtZKpoQapBAxBBAlUYx9XhZWq38RVQaIIoyBCKSoxkUOurhZWpeKKrGiBh0EIIEq6GhyNc1MLK1JX4hcBjpBFSBISox0I2XLUwsrT5KGLhPjVWMdUFmLZQ1+aWFlaLTCSGCOiLnVC4HREkjYhKjGOiELa2yGruEQIi/GJprfQwsrjekkkPmP6h7M/4RT5PcaVUuBj4IEhUYx0RJfyzekje/HRkG2N1x4WVwrZQl+lkv9Rvea6DrZm7oWoXAx0RYTuHWRNq6cNFjRqbFN0Yr7EVwsoTT5obS3aN2m6Bvb7hlLQuF6EEb2sdGOiLbg+ZuXwsOnTroJ7D7C5iRnmn8Gim0cv0Q5v8A0b7m/wDSRvQlQQxMdAuF8C4HRBLQOstXU3fEmboZIqJHvpOm0FuSJ1o6MkXDHAxRKEctZ/WS550UxjRsJjN3Xk2OS6MR0exsyT0YpbOeGTdZvoi3pAmTNv8AdZipu/Ck2cf06w7iW6Jew/sjffsT8Pd+s3fiR8NcO/8ATrh3/rN/6haA/qNz7AAHn7nj7nj7nj7nj7nj7nj7nn7nj7nn7nn7nn7nn7nn7nn7nn7nn7nn7nn7nn7nn7nn7nn7nn7nn7nn7nn7nn7nn7nn7nj7nj7nj7nj7nn7nn7nn7nl7VA3qxFu4//Z', 
+            terminWaznosci: "14.07.2028", dataWydania: "14.07.2023", imieOjca: "ADAM", miejsceUrodzenia: "POZNAŃ"
+        };
+        let timeUpdateInterval;
+		
+function updateTime() {
+    const now = new Date();
+    
+    // Generowanie aktualnego czasu (godzina:minuta:sekunda)
+    const time = now.toLocaleTimeString('pl-PL', { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit', 
+        hour12: false 
+    });
+    
+    // Generowanie aktualnej daty w formacie Dzień.Miesiąc.Rok
+    const date = now.toLocaleDateString('pl-PL', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+    
+    const timeElement = document.getElementById('current-time-mdowod');
+    if (timeElement) {
+        // Zmieniamy, żeby używać zmiennej 'date' zamiast 'fixedDate'
+        timeElement.innerText = `Czas: ${time} ${date}`;
+    }
+}
+        
+        function updateContent() {
+            if (document.getElementById('imie')) document.getElementById('imie').innerText = DANE.imie;
+            if (document.getElementById('nazwisko')) document.getElementById('nazwisko').innerText = DANE.nazwisko;
+            if (document.getElementById('obywatelstwo')) document.getElementById('obywatelstwo').innerText = DANE.obywatelstwo;
+            if (document.getElementById('dataUrodzenia')) document.getElementById('dataUrodzenia').innerText = DANE.dataUrodzenia;
+            if (document.getElementById('pesel')) document.getElementById('pesel').innerText = DANE.pesel;
+            if (document.getElementById('seria-numer')) document.getElementById('seria-numer').innerText = DANE.seriaNumer;
+            if (document.getElementById('user-photo')) document.getElementById('user-photo').src = DANE.zdjecie;
+            
+            if (document.getElementById('termin-waznosci')) document.getElementById('termin-waznosci').innerText = DANE.terminWaznosci;
+            if (document.getElementById('data-wydania')) document.getElementById('data-wydania').innerText = DANE.dataWydania;
+            if (document.getElementById('imie-ojca')) document.getElementById('imie-ojca').innerText = DANE.imieOjca;
+            if (document.getElementById('miejsce-urodzenia')) document.getElementById('miejsce-urodzenia').innerText = DANE.miejsceUrodzenia;
+        }
+
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const button = document.querySelector('.serial-number-card .copy-button');
+                const originalText = button.innerHTML;
+                const originalBg = button.style.backgroundColor;
+                
+                button.innerHTML = '<i class="fas fa-check"></i> Skopiowano';
+                button.style.backgroundColor = '#4CAF50';
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.style.backgroundColor = originalBg;
+                }, 1000);
+            });
+        }
+        
+        function toggleData(contentId, iconId) {
+            const content = document.getElementById(contentId);
+            const icon = document.getElementById(iconId);
+
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                icon.style.transform = 'rotate(90deg)';
+            } else {
+                content.classList.add('collapsed');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+        
+        // Inicjalizacja
+        document.addEventListener('DOMContentLoaded', () => {
+             updateContent();
+             updateTime();
+             timeUpdateInterval = setInterval(updateTime, 1000); 
+        });
+    </script>
+
+</body>
+</html>
