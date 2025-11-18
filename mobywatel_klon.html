@@ -83,6 +83,14 @@ html {
 body, html, #main-app-container, .document-container {
     background-color: var(--mobywatel-bg-color) !important; /* Używamy Twojej zmiennej #F5F5F5 */
 }
+
+/* DODATKOWA KOREKTA DLA IOS SAFE AREA/STATUS BAR */
+/* To wymusza rozciągnięcie tła body na cały obszar "bezpieczny" na górze (notch/Dynamic Island). */
+body {
+    padding-top: constant(safe-area-inset-top);
+    padding-top: env(safe-area-inset-top);
+    background-color: var(--mobywatel-bg-color) !important;
+}
         .mdowod-title-wrapper { 
    
     position: absolute !important; /* Absolutne pozycjonowanie */
